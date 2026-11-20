@@ -1,7 +1,10 @@
 import { useState } from "react";
+import {v4 as uuidv4} from "uuid";
 import "../styles/Expenseform.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Expenseform() {
+    const navigate = useNavigate();
     const [formData, setFormData] = useState({
         amount: (""),
         description: '',
@@ -41,9 +44,12 @@ export default function Expenseform() {
     const handleSubmit=(e)=>{
         e.preventDefault();
         if(!validate()) return;
-        console.log("Expense Added Successfully",
-            formData.amount,formData.description,formData.Date,formData.category
-        );
+        
+        const expenses = JSON.parse(localStorage.getItem('expense') || '[]');
+        const newExpense = {...formData, id: uuidv4() };
+        console.log("Expense Added Successfully",newExpense);
+        localStorage.setItem('expense', JSON.stringify([...expenses, newExpense]));
+        navigate("/");
     }
   return (
     <div className="Expenseform">

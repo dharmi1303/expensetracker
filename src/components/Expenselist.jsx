@@ -1,8 +1,25 @@
+import { useEffect, useState } from 'react';
 import '../styles/Expenselist.css';
+import ConfirmationModel from './ConfirmationModel';
 
-function Expenselist({expense}) {
-    
+function Expenselist() {
+    const [expense, setExpenses] = useState([]);
+    const loadExpenses = () => {
+        const savedExpenses = JSON.parse(localStorage.getItem("expense") || "[]");
+           setExpenses(savedExpenses);
+    };
+
+    useEffect(() => {
+        //safe: we only read localstorage on mount
+        //eslint-disable-next-line react-hooks/set-state-in-effect
+        loadExpenses();
+    },[]);
+    const totalAmount = expense.reduce(
+        (sum, item) => sum + Number(item.amount),
+        0
+    );
     return (
+        <>
         <div className="Expenselist">
          <div className="list-search">
           
@@ -38,10 +55,11 @@ function Expenselist({expense}) {
                 </thead>
 
                 <tbody>
-                 {expense.map((expense)=>(
-                    <tr>
+                 {
+                    expense.length>0?(expense.map((expense)=>(
+                    <tr key={expense.id}>
                         <td>{expense.amount}</td>
-                        <td>{expense.shopping}</td>
+                        <td>{expense.description}</td>
                         <td>{expense.date}</td>
                         <td>{expense.category}</td>
                         <td className="table-actions">
@@ -50,13 +68,27 @@ function Expenselist({expense}) {
                             <button className="btn-readmore">view</button>
                         </td>
                     </tr>
-                    ))}
+                    ))):(<>
+                    <tr>
+                        <td colSpan="7" className="no-data">No Expenses Found</td>
+                    </tr>
+                    </>)
+                 }
                     <tr className="expense-total">
-                      <td colSpan={5}>Total: ₹7500</td> 
+                      <td colSpan="7">Total Amount: {totalAmount}</td> 
                       </tr> 
                 </tbody>
             </table>
-        </div>  
+        </div> 
+        <ConfirmationModel
+        title="Delete Expense"
+        message={"Are you sure you want to delete this expense"}
+        confirmText="Delete"
+        cancelText="Cancel"
+        oncancel={() => {}}
+        onConfirm={() => {}}
+        />
+        </> 
     );
 }
 

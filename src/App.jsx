@@ -1,8 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import "./App.css";
-import Expenseform from "./components/Expenseform";
-import Expenselist from "./components/Expenselist";
-import Navbar from "./components/Navbar";
+
 import Homepage from "./pages/Homepage";
 import AddExpensepage from "./pages/AddExpensepage";
 
